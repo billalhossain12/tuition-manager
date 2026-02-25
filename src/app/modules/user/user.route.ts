@@ -5,33 +5,32 @@ import validateRequest from '../../middlewares/validateRequest';
 import { USER_ROLE } from './user.constant';
 import { UserControllers } from './user.controller';
 import { UserValidation } from './user.validation';
-import { createAdminValidationSchema } from '../admin/admin.validation';
 import { upload } from '../../utils/sendImageToCloudinary';
+import { createTutorValidationSchema } from '../tutor/tutor.validation';
 
 const router = express.Router();
 
 router.post(
-  '/create-admin',
-  auth(USER_ROLE.superAdmin, USER_ROLE.admin),
+  '/create-tutor',
   upload.single('file'),
   (req: Request, res: Response, next: NextFunction) => {
     req.body = JSON.parse(req.body.data);
     next();
   },
-  validateRequest(createAdminValidationSchema),
-  UserControllers.createAdmin,
+  validateRequest(createTutorValidationSchema),
+  UserControllers.createTutor,
 );
 
 router.post(
   '/change-status/:id',
-  auth(USER_ROLE.superAdmin, USER_ROLE.admin),
+  auth(USER_ROLE.superAdmin),
   validateRequest(UserValidation.changeStatusValidationSchema),
   UserControllers.changeStatus,
 );
 
 router.get(
   '/me',
-  auth(USER_ROLE.superAdmin, USER_ROLE.admin, USER_ROLE.moderator),
+  auth(USER_ROLE.superAdmin, USER_ROLE.tutor),
   UserControllers.getMe,
 );
 

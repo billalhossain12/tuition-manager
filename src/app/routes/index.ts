@@ -1,7 +1,10 @@
 import { Router } from 'express';
 import { UserRoutes } from '../modules/user/user.route';
 import { AuthRoutes } from '../modules/auth/auth.route';
-import { AdminRoutes } from '../modules/admin/admin.route';
+import { TutorRoutes } from '../modules/tutor/tutor.route';
+import { StudentRoutes } from '../modules/student/student.route';
+import { AttendanceRoutes } from '../modules/attendance/attendance.route';
+import { PaymentRoutes } from '../modules/payment/payment.route';
 
 const router = Router();
 
@@ -10,14 +13,25 @@ const moduleRoutes = [
     path: '/users',
     route: UserRoutes,
   },
-
   {
     path: '/auth',
     route: AuthRoutes,
   },
   {
-    path: '/admins',
-    route: AdminRoutes,
+    path: '/tutors',
+    route: TutorRoutes,
+  },
+  {
+    path: '/students',
+    route: StudentRoutes,
+  },
+  {
+    path: '/attendances',
+    route: AttendanceRoutes,
+  },
+  {
+    path: '/payments',
+    route: PaymentRoutes,
   },
 ];
 

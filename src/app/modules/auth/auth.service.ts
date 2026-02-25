@@ -59,7 +59,6 @@ const loginUser = async (payload: TLoginUser) => {
   return {
     accessToken,
     refreshToken,
-    needsPasswordChange: user?.needsPasswordChange,
   };
 };
 
@@ -78,7 +77,7 @@ const refreshToken = async (token: string) => {
   // checking if the given token is valid
   const decoded = verifyToken(token, config.jwt_refresh_secret as string);
 
-  const { userId, iat } = decoded;
+  const { userId } = decoded;
 
   // checking if the user is exist
   const user = await User.findById(userId);
@@ -99,13 +98,6 @@ const refreshToken = async (token: string) => {
 
   if (userStatus === 'blocked') {
     throw new AppError(httpStatus.FORBIDDEN, 'This user is blocked ! !');
-  }
-
-  if (
-    user.passwordChangedAt &&
-    User.isJWTIssuedBeforePasswordChanged(user.passwordChangedAt, iat as number)
-  ) {
-    throw new AppError(httpStatus.UNAUTHORIZED, 'You are not authorized !');
   }
 
   const jwtPayload = {

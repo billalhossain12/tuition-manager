@@ -22,16 +22,9 @@ const userSchema = new Schema<TUser, UserModel>(
       required: true,
       select: 0,
     },
-    needsPasswordChange: {
-      type: Boolean,
-      default: true,
-    },
-    passwordChangedAt: {
-      type: Date,
-    },
     role: {
       type: String,
-      enum: ['superAdmin', 'admin', 'moderator'],
+      enum: ['superAdmin', 'tutor'],
     },
     status: {
       type: String,

@@ -3,19 +3,15 @@ import catchAsync from '../../utils/catchAsync';
 import sendResponse from '../../utils/sendResponse';
 import { UserServices } from './user.service';
 
-const createAdmin = catchAsync(async (req, res) => {
-  const { password, admin: adminData } = req.body;
+const createTutor = catchAsync(async (req, res) => {
+  const { tutor: tutorData } = req.body;
 
-  const result = await UserServices.createAdminIntoDB(
-    req.file,
-    password,
-    adminData,
-  );
+  const result = await UserServices.createTutorIntoDB(req.file, tutorData);
 
   sendResponse(res, {
     statusCode: httpStatus.OK,
     success: true,
-    message: 'Admin is created succesfully',
+    message: 'Tutor is created succesfully',
     data: result,
   });
 });
@@ -46,7 +42,7 @@ const changeStatus = catchAsync(async (req, res) => {
 });
 
 export const UserControllers = {
-  createAdmin,
+  createTutor,
   getMe,
   changeStatus,
 };

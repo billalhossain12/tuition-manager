@@ -21,7 +21,7 @@ router.post(
 
 router.post(
   '/logout',
-  auth(USER_ROLE.superAdmin, USER_ROLE.admin, USER_ROLE.moderator),
+  auth(USER_ROLE.superAdmin, USER_ROLE.tutor),
   AuthControllers.logoutUser,
 );
 

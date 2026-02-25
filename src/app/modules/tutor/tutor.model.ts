@@ -1,12 +1,12 @@
 import { model, Schema } from 'mongoose';
-import { TAdmin } from './admin.interface';
+import { TTutor } from './tutor.interface';
 
-const adminSchema = new Schema<TAdmin>(
+const tutorSchema = new Schema<TTutor>(
   {
-    name: {
+    fullName: {
       type: String,
-      required: true,
       trim: true,
+      required: true,
     },
     email: {
       type: String,
@@ -16,18 +16,22 @@ const adminSchema = new Schema<TAdmin>(
     },
     phone: {
       type: String,
-      required: true,
       trim: true,
+      required: true,
     },
-    city: {
+    address: {
       type: String,
-      required: true,
       trim: true,
+      required: true,
     },
-    designation: {
-      type: String,
+    subjects: {
+      type: [String],
       required: true,
+    },
+    bio: {
+      type: String,
       trim: true,
+      required: true,
     },
     profileImg: {
       type: String,
@@ -47,4 +51,4 @@ const adminSchema = new Schema<TAdmin>(
   { timestamps: true, versionKey: false },
 );
 
-export const Admin = model<TAdmin>('Admin', adminSchema);
+export const Tutor = model<TTutor>('Tutor', tutorSchema);

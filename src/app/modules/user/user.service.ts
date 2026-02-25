@@ -1,40 +1,35 @@
 /* eslint-disable no-unused-vars */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import mongoose, { Types } from 'mongoose';
-import config from '../../config';
-import { TAdmin } from '../admin/admin.interface';
 import { TUser } from './user.interface';
 import { User } from './user.model';
 import { sendImageToCloudinary } from '../../utils/sendImageToCloudinary';
 import AppError from '../../errors/AppError';
 import httpStatus from 'http-status';
-import { Admin } from '../admin/admin.model';
+import { Tutor } from '../tutor/tutor.model';
+import { TTutor } from '../tutor/tutor.interface';
 
-const createAdminIntoDB = async (
-  file: any,
-  password: string,
-  payload: TAdmin,
-) => {
+const createTutorIntoDB = async (file: any, payload: TTutor) => {
   // create a user object
   const userData: Partial<TUser> = {};
 
   //if password is not given , use deafult password
-  userData.password = password || (config.default_password as string);
+  userData.password = payload.password;
 
   //set user role
-  userData.role = 'admin';
+  userData.role = 'tutor';
 
-  //set admin email
+  //set tutor email
   userData.email = payload.email;
-  //set admin name
-  userData.name = payload.name;
+  //set tutor name
+  userData.name = payload.fullName;
   const session = await mongoose.startSession();
 
   try {
     session.startTransaction();
 
     if (file) {
-      const imageName = `${payload?.name}`;
+      const imageName = `${payload?.fullName}`;
       const path = file?.path;
       //send image to cloudinary
       const { secure_url } = await sendImageToCloudinary(imageName, path);
@@ -51,24 +46,24 @@ const createAdminIntoDB = async (
     // create a user (transaction-1)
     const newUser = await User.create([userData], { session });
 
-    //create a admin
+    //create a tutor
     if (!newUser.length) {
-      throw new AppError(httpStatus.BAD_REQUEST, 'Failed to create admin');
+      throw new AppError(httpStatus.BAD_REQUEST, 'Failed to create tutor');
     }
     // set _id as user
     payload.user = newUser[0]._id; //reference _id
 
-    // create a admin (transaction-2)
-    const newAdmin = await Admin.create([payload], { session });
+    // create a tutor (transaction-2)
+    const newTutor = await Tutor.create([payload], { session });
 
-    if (!newAdmin.length) {
-      throw new AppError(httpStatus.BAD_REQUEST, 'Failed to create admin');
+    if (!newTutor.length) {
+      throw new AppError(httpStatus.BAD_REQUEST, 'Failed to create tutor');
     }
 
     await session.commitTransaction();
     await session.endSession();
 
-    return newAdmin;
+    return newTutor;
   } catch (err: any) {
     await session.abortTransaction();
     await session.endSession();
@@ -78,8 +73,8 @@ const createAdminIntoDB = async (
 
 const getMe = async (userId: Types.ObjectId, role: string) => {
   let result = null;
-  if (role === 'admin') {
-    result = await Admin.findOne({ user: userId });
+  if (role === 'tutor') {
+    result = await Tutor.findOne({ user: userId });
   }
   if (role === 'superAdmin') {
     result = await User.findById(userId);
@@ -95,7 +90,7 @@ const changeStatus = async (id: string, payload: { status: string }) => {
 };
 
 export const UserServices = {
-  createAdminIntoDB,
+  createTutorIntoDB,
   getMe,
   changeStatus,
 };

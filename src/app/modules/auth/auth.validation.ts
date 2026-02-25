@@ -48,7 +48,6 @@ const resetPasswordValidationSchema = z.object({
 export const AuthValidation = {
   loginValidationSchema,
   refreshTokenValidationSchema,
-
   sendOTPValidationSchema,
   verifyOTPValidationSchema,
   resetPasswordValidationSchema,

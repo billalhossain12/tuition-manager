@@ -21,7 +21,7 @@ const auth = (...requiredRoles: TUserRole[]) => {
       token,
       config.jwt_access_secret as string,
     ) as JwtPayload;
-    const { role, userId, iat } = decoded;
+    const { role, userId } = decoded;
 
     // checking if the user is exist
     const user = await User.findById(userId);
@@ -42,16 +42,6 @@ const auth = (...requiredRoles: TUserRole[]) => {
 
     if (userStatus === 'blocked') {
       throw new AppError(httpStatus.FORBIDDEN, 'This user is blocked ! !');
-    }
-
-    if (
-      user.passwordChangedAt &&
-      User.isJWTIssuedBeforePasswordChanged(
-        user.passwordChangedAt,
-        iat as number,
-      )
-    ) {
-      throw new AppError(httpStatus.UNAUTHORIZED, 'You are not authorized !');
     }
 
     if (requiredRoles && !requiredRoles.includes(role)) {
