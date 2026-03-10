@@ -53,19 +53,18 @@ const routineSchema = new Schema<TRoutine>(
       },
     },
 
-    monthlySalary: {
-      type: Number,
-      required: true,
-    },
-
     startDate: {
       type: Date,
-      required: true,
+      required: true
     },
 
     isActive: {
       type: Boolean,
       default: true,
+    },
+    isDeleted: {
+      type: Boolean,
+      default: false,
     },
   },
   { timestamps: true, versionKey: false },

@@ -28,8 +28,7 @@ const getAllTutors = catchAsync(async (req, res) => {
 
 const updateTutor = catchAsync(async (req, res) => {
   const { id } = req.params;
-  const { tutor } = req.body;
-  const result = await TutorServices.updateTutorIntoDB(id, tutor);
+  const result = await TutorServices.updateTutorIntoDB(id, req.body);
 
   sendResponse(res, {
     statusCode: httpStatus.OK,

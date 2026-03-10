@@ -5,9 +5,9 @@ import { Student } from './student.model';
 import { Tutor } from '../tutor/tutor.model';
 import { TStudent } from './student.interface';
 
-const createStudentIntoDB = async (userId: string, payload: TStudent) => {
+const createMyStudentIntoDB = async (userId: string, payload: TStudent) => {
   // checking if the tutor is exist
-  const tutor = await Tutor.findOne({ userId });
+  const tutor = await Tutor.findOne({ user: userId });
   if (!tutor) {
     throw new AppError(httpStatus.NOT_FOUND, 'This tutor does not exist!');
   }
@@ -18,31 +18,77 @@ const createStudentIntoDB = async (userId: string, payload: TStudent) => {
   return res;
 };
 
-const getAllStudentsFromDB = async (userId: string) => {
+const getMyAllStudentsFromDB = async (userId: string) => {
   // checking if the tutor is exist
-  const tutor = await Tutor.findOne({ userId });
+  const tutor = await Tutor.findOne({ user: userId });
   if (!tutor) {
     throw new AppError(httpStatus.NOT_FOUND, 'This tutor does not exist!');
   }
   return Student.find({ tutorId: tutor._id });
 };
 
-const getSingleStudentFromDB = async (id: string) => {
-  return Student.findById(id);
+const getMySingleStudentFromDB = async (studentId: string, userId: string) => {
+  // checking if the tutor is exist
+  const tutor = await Tutor.findOne({ user: userId });
+  if (!tutor) {
+    throw new AppError(httpStatus.NOT_FOUND, 'This tutor does not exist!');
+  }
+
+  //check if this is a valid tutor
+  const student = await Student.findOne({ _id: studentId, tutorId: tutor._id });
+  if (!student) {
+    throw new AppError(httpStatus.UNAUTHORIZED, 'This student does not exist!');
+  }
+
+  return Student.findOne({ _id: studentId, tutorId: tutor._id });
 };
 
-const updateStudentIntoDB = async (id: string, payload: Partial<TStudent>) => {
-  return Student.findByIdAndUpdate(id, payload, { new: true });
+const updateMyStudentIntoDB = async (
+  studentId: string,
+  userId: string,
+  payload: Partial<TStudent>,
+) => {
+  // checking if the tutor is exist
+  const tutor = await Tutor.findOne({ user: userId });
+  if (!tutor) {
+    throw new AppError(httpStatus.NOT_FOUND, 'This student does not exist!');
+  }
+
+  //check if this is a valid tutor
+  const student = await Student.findOne({ _id: studentId, tutorId: tutor._id });
+  if (!student) {
+    throw new AppError(httpStatus.UNAUTHORIZED, 'This student does not exist!');
+  }
+
+  return Student.findOneAndUpdate(
+    { _id: studentId, tutorId: tutor._id },
+    payload,
+    {
+      new: true,
+    },
+  );
 };
 
-const deleteStudentFromDB = async (id: string) => {
-  return Student.findByIdAndDelete(id);
+const deleteMyStudentFromDB = async (studentId: string, userId: string) => {
+  // checking if the tutor is exist
+  const tutor = await Tutor.findOne({ user: userId });
+  if (!tutor) {
+    throw new AppError(httpStatus.NOT_FOUND, 'This tutor does not exist!');
+  }
+
+  //check if this is a valid tutor
+  const student = await Student.findOne({ _id: studentId, tutorId: tutor._id });
+  if (!student) {
+    throw new AppError(httpStatus.UNAUTHORIZED, 'This student does not exist!');
+  }
+
+  return Student.findOneAndDelete({ _id: studentId, tutorId: tutor._id });
 };
 
 export const StudentServices = {
-  createStudentIntoDB,
-  getAllStudentsFromDB,
-  getSingleStudentFromDB,
-  updateStudentIntoDB,
-  deleteStudentFromDB,
+  createMyStudentIntoDB,
+  getMyAllStudentsFromDB,
+  getMySingleStudentFromDB,
+  updateMyStudentIntoDB,
+  deleteMyStudentFromDB,
 };

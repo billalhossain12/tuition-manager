@@ -7,11 +7,7 @@ import { updateTutorValidationSchema } from './tutor.validation';
 
 const router = express.Router();
 
-router.get(
-  '/',
-  auth(USER_ROLE.superAdmin, USER_ROLE.tutor),
-  TutorControllers.getAllTutors,
-);
+router.get('/', auth(USER_ROLE.superAdmin), TutorControllers.getAllTutors);
 
 router.get(
   '/:id',
@@ -26,10 +22,6 @@ router.patch(
   TutorControllers.updateTutor,
 );
 
-router.delete(
-  '/:id',
-  auth(USER_ROLE.superAdmin, USER_ROLE.tutor),
-  TutorControllers.deleteTutor,
-);
+router.delete('/:id', auth(USER_ROLE.superAdmin), TutorControllers.deleteTutor);
 
 export const TutorRoutes = router;

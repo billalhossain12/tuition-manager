@@ -20,20 +20,20 @@ router.post(
 router.get('/', auth(USER_ROLE.tutor), AttendanceControllers.getAllAttendances);
 
 router.get(
-  '/:id',
+  '/:attendanceId',
   auth(USER_ROLE.tutor),
   AttendanceControllers.getSingleAttendance,
 );
 
 router.patch(
-  '/:id',
+  '/:attendanceId',
   auth(USER_ROLE.tutor),
   validateRequest(updateAttendanceValidationSchema),
   AttendanceControllers.updateAttendance,
 );
 
 router.delete(
-  '/:id',
+  '/:attendanceId',
   auth(USER_ROLE.tutor),
   AttendanceControllers.deleteAttendance,
 );

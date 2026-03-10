@@ -11,6 +11,7 @@ const markAttendanceIntoDB = async (userId: string, payload: TAttendance) => {
   if (!tutor) {
     throw new AppError(httpStatus.NOT_FOUND, 'This tutor does not exist!');
   }
+
   const res = Attendance.create({
     ...payload,
     tutorId: tutor._id,
@@ -23,31 +24,33 @@ const getAllAttendancesFromDB = async () => {
   return result;
 };
 
-const getSingleAttendanceFromDB = async (studentId: string) => {
-  const result = Attendance.find({ studentId });
+const getSingleAttendanceFromDB = async (attendanceId: string) => {
+  const result = Attendance.find({ attendanceId });
   return result;
 };
 
 const updateAttendanceIntoDB = async (
-  id: string,
+  attendanceId: string,
   payload: Partial<TAttendance>,
 ) => {
   // checking if the attendance is exist
-  const attendance = await Attendance.findById(id);
+  const attendance = await Attendance.findById(attendanceId);
 
   if (!attendance) {
     throw new AppError(httpStatus.NOT_FOUND, 'This attendance does not exist!');
   }
 
-  const result = await Attendance.findByIdAndUpdate(id, payload, {
+  const result = await Attendance.findByIdAndUpdate(attendance, payload, {
     new: true,
     runValidators: true,
   });
   return result;
 };
 
-const deleteAttendanceFromDB = async (id: string) => {
-  const res = await Attendance.findByIdAndUpdate(id, { isDeleted: true });
+const deleteAttendanceFromDB = async (attendanceId: string) => {
+  const res = await Attendance.findByIdAndUpdate(attendanceId, {
+    isDeleted: true,
+  });
   return res;
 };
 

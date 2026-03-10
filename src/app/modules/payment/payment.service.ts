@@ -2,11 +2,11 @@
 import httpStatus from 'http-status';
 import AppError from '../../errors/AppError';
 import { Tutor } from '../tutor/tutor.model';
-import { Payment } from './payment.schema';
+import { Payment } from './payment.model';
 import { TPayment } from './payment.interface';
 
 const createPaymentIntoDB = async (userId: string, payload: TPayment) => {
-  const tutor = await Tutor.findOne({ userId });
+  const tutor = await Tutor.findOne({ user:userId });
   if (!tutor) {
     throw new AppError(httpStatus.NOT_FOUND, 'This tutor does not exist.');
   }

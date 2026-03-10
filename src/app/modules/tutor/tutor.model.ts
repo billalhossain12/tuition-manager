@@ -51,4 +51,21 @@ const tutorSchema = new Schema<TTutor>(
   { timestamps: true, versionKey: false },
 );
 
+// filter out deleted documents
+tutorSchema.pre('find', function (next) {
+  this.find({ isDeleted: { $ne: true } });
+  next();
+});
+
+tutorSchema.pre('findOne', function (next) {
+  this.find({ isDeleted: { $ne: true } });
+  next();
+});
+
+// Check if tutor already exist
+tutorSchema.statics.isTutorExist = async function (id: string) {
+  const existingUser = await Tutor.findById(id);
+  return existingUser;
+};
+
 export const Tutor = model<TTutor>('Tutor', tutorSchema);

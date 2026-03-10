@@ -21,7 +21,7 @@ router.post(
   UserControllers.createTutor,
 );
 
-router.post(
+router.patch(
   '/change-status/:id',
   auth(USER_ROLE.superAdmin),
   validateRequest(UserValidation.changeStatusValidationSchema),

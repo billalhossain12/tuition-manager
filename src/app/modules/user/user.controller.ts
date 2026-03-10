@@ -29,7 +29,7 @@ const getMe = catchAsync(async (req, res) => {
 });
 
 const changeStatus = catchAsync(async (req, res) => {
-  const id = req.params.id;
+  const {id} = req.params;
 
   const result = await UserServices.changeStatus(id, req.body);
 

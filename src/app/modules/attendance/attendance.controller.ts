@@ -4,20 +4,20 @@ import sendResponse from '../../utils/sendResponse';
 import { AttendanceServices } from './attendance.service';
 
 const markAttendance = catchAsync(async (req, res) => {
-  const { id } = req.params;
-  const result = await AttendanceServices.markAttendanceIntoDB(id, req.body);
+  const { attendanceId } = req.params;
+  const result = await AttendanceServices.markAttendanceIntoDB(attendanceId, req.body);
 
   sendResponse(res, {
     statusCode: httpStatus.OK,
     success: true,
-    message: 'Attendance is retrieved succesfully',
+    message: 'Attendance is created succesfully',
     data: result,
   });
 });
 
 const getSingleAttendance = catchAsync(async (req, res) => {
-  const { id } = req.params;
-  const result = await AttendanceServices.getSingleAttendanceFromDB(id);
+  const { attendanceId } = req.params;
+  const result = await AttendanceServices.getSingleAttendanceFromDB(attendanceId);
 
   sendResponse(res, {
     statusCode: httpStatus.OK,
@@ -39,9 +39,9 @@ const getAllAttendances = catchAsync(async (req, res) => {
 });
 
 const updateAttendance = catchAsync(async (req, res) => {
-  const { id } = req.params;
+  const { attendanceId } = req.params;
   const { tutor } = req.body;
-  const result = await AttendanceServices.updateAttendanceIntoDB(id, tutor);
+  const result = await AttendanceServices.updateAttendanceIntoDB(attendanceId, tutor);
 
   sendResponse(res, {
     statusCode: httpStatus.OK,
@@ -52,8 +52,8 @@ const updateAttendance = catchAsync(async (req, res) => {
 });
 
 const deleteAttendance = catchAsync(async (req, res) => {
-  const { id } = req.params;
-  const result = await AttendanceServices.deleteAttendanceFromDB(id);
+  const { attendanceId } = req.params;
+  const result = await AttendanceServices.deleteAttendanceFromDB(attendanceId);
 
   sendResponse(res, {
     statusCode: httpStatus.OK,

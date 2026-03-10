@@ -14,20 +14,28 @@ router.post(
   '/',
   auth(USER_ROLE.tutor),
   validateRequest(createStudentValidationSchema),
-  StudentControllers.createStudentIntoDB,
+  StudentControllers.createMyStudentIntoDB,
 );
 
-router.get('/', auth(USER_ROLE.tutor), StudentControllers.getAllStudents);
+router.get('/', auth(USER_ROLE.tutor), StudentControllers.getMyAllStudents);
 
-router.get('/:id', auth(USER_ROLE.tutor), StudentControllers.getSingleStudent);
+router.get(
+  '/:studentId',
+  auth(USER_ROLE.tutor),
+  StudentControllers.getMySingleStudent,
+);
 
 router.patch(
-  '/:id',
+  '/:studentId',
   auth(USER_ROLE.tutor),
   validateRequest(updateStudentValidationSchema),
-  StudentControllers.updateStudent,
+  StudentControllers.updateMyStudent,
 );
 
-router.delete('/:id', auth(USER_ROLE.tutor), StudentControllers.deleteStudent);
+router.delete(
+  '/:studentId',
+  auth(USER_ROLE.tutor),
+  StudentControllers.deleteMyStudent,
+);
 
 export const StudentRoutes = router;

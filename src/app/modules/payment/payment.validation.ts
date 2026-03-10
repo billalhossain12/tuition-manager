@@ -10,7 +10,6 @@ const objectSchema = z
 
 export const createPaymentValidationSchema = z.object({
   body: z.object({
-    tutorId: objectSchema,
     studentId: objectSchema,
     amount: z.number(),
     month: z.number(),
@@ -24,7 +23,6 @@ export const createPaymentValidationSchema = z.object({
 
 export const updatePaymentValidationSchema = z.object({
   body: z.object({
-    tutorId: objectSchema,
     studentId: objectSchema,
     amount: z.number().optional(),
     month: z.number().optional(),

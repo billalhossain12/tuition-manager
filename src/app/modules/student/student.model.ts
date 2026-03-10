@@ -13,6 +13,11 @@ const studentSchema = new Schema<TStudent>(
       trim: true,
       required: true,
     },
+    phone: {
+      type: String,
+      trim: true,
+      required: true,
+    },
     subject: {
       type: String,
       trim: true,
@@ -31,5 +36,16 @@ const studentSchema = new Schema<TStudent>(
   },
   { timestamps: true, versionKey: false },
 );
+
+// filter out deleted documents
+studentSchema.pre('find', function (next) {
+  this.find({ isDeleted: { $ne: true } });
+  next();
+});
+
+studentSchema.pre('findOne', function (next) {
+  this.find({ isDeleted: { $ne: true } });
+  next();
+});
 
 export const Student = model<TStudent>('Student', studentSchema);
