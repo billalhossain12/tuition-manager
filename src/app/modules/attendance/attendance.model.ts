@@ -16,6 +16,12 @@ const attendanceSchema = new Schema<TAttendance>(
       required: true,
     },
 
+    routineId: {
+      type: Schema.Types.ObjectId,
+      ref: 'Routine',
+      required: true,
+    },
+
     date: {
       type: Date,
       required: true,
@@ -27,7 +33,7 @@ const attendanceSchema = new Schema<TAttendance>(
         values: [...AttendanceStatus],
         message: `{VALUE} is not a valid attendance status`,
       },
-      default: 'taught',
+      default: 'pending',
     },
     note: {
       type: String,

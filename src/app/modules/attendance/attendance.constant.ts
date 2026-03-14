@@ -1,6 +1,2 @@
-export type TAttendanceStatus = 'taught' | 'cancelled' | 'absent';
-export const AttendanceStatus: TAttendanceStatus[] = [
-  'taught',
-  'cancelled',
-  'absent',
-];
+export type TAttendanceStatus = 'present' | 'absent' | 'pending';
+export const AttendanceStatus: TAttendanceStatus[] = ['present', 'absent'];

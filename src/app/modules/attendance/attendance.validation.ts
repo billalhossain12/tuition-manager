@@ -10,9 +10,8 @@ const objectSchema = z
 
 export const markAttendanceValidationSchema = z.object({
   body: z.object({
-    tutorId: objectSchema,
     studentId: objectSchema,
-    date: z.string(),
+    routineId: objectSchema,
     status: z.enum([...AttendanceStatus] as [string, ...string[]]),
     note: z.string().optional(),
   }),
@@ -21,7 +20,6 @@ export const markAttendanceValidationSchema = z.object({
 export const updateAttendanceValidationSchema = z.object({
   body: z.object({
     studentId: objectSchema,
-    date: z.string().optional(),
     status: z.enum([...AttendanceStatus] as [string, ...string[]]).optional(),
     note: z.string().optional(),
   }),

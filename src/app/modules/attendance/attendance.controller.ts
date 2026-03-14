@@ -4,8 +4,7 @@ import sendResponse from '../../utils/sendResponse';
 import { AttendanceServices } from './attendance.service';
 
 const markAttendance = catchAsync(async (req, res) => {
-  const { attendanceId } = req.params;
-  const result = await AttendanceServices.markAttendanceIntoDB(attendanceId, req.body);
+  const result = await AttendanceServices.markAttendanceIntoDB(req.user.userId, req.body);
 
   sendResponse(res, {
     statusCode: httpStatus.OK,
@@ -38,6 +37,17 @@ const getAllAttendances = catchAsync(async (req, res) => {
   });
 });
 
+const getTodayAttendances = catchAsync(async (req, res) => {
+  const result = await AttendanceServices.getTodayAttendancesFromDB();
+
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: "Today's attendances are retrieved succesfully",
+    data: result,
+  });
+});
+
 const updateAttendance = catchAsync(async (req, res) => {
   const { attendanceId } = req.params;
   const { tutor } = req.body;
@@ -66,6 +76,7 @@ const deleteAttendance = catchAsync(async (req, res) => {
 export const AttendanceControllers = {
   markAttendance,
   getAllAttendances,
+  getTodayAttendances,
   getSingleAttendance,
   deleteAttendance,
   updateAttendance,

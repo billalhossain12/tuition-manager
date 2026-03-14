@@ -3,57 +3,9 @@ import httpStatus from 'http-status';
 import AppError from '../../errors/AppError';
 import { Routine } from './routine.model';
 import { Tutor } from '../tutor/tutor.model';
-import { TDayScheduleSchema, TRoutine } from './routine.interface';
+import { TRoutine } from './routine.interface';
 import { Student } from '../student/student.model';
-
-const timeToMinutes = (time: string): number => {
-  const [hour, minute] = time.split(':').map(Number);
-  return hour * 60 + minute;
-};
-
-const isTimeOverlap = (
-  startA: string,
-  endA: string,
-  startB: string,
-  endB: string,
-) => {
-  const aStart = timeToMinutes(startA);
-  const aEnd = timeToMinutes(endA);
-
-  const bStart = timeToMinutes(startB);
-  const bEnd = timeToMinutes(endB);
-
-  return aStart < bEnd && aEnd > bStart;
-};
-
-const checkRoutineConflict = (
-  newSchedules: TDayScheduleSchema[],
-  existingRoutines: TRoutine[],
-) => {
-  for (const newSchedule of newSchedules) {
-    for (const routine of existingRoutines) {
-      const matchedDaySchedule = routine.weeklySchedule.filter(
-        s => s.day === newSchedule.day,
-      );
-
-      for (const schedule of matchedDaySchedule) {
-        const conflict = isTimeOverlap(
-          newSchedule.startTime,
-          newSchedule.endTime,
-          schedule.startTime,
-          schedule.endTime,
-        );
-
-        if (conflict) {
-          throw new AppError(
-            httpStatus.BAD_REQUEST,
-            `Routine conflict on ${newSchedule.day} (${schedule.startTime} - ${schedule.endTime})`,
-          );
-        }
-      }
-    }
-  }
-};
+import { checkRoutineConflict } from './routine.utils';
 
 const createMyRoutineIntoDB = async (userId: string, payload: TRoutine) => {
   const tutor = await Tutor.findOne({ user: userId });
@@ -144,13 +96,23 @@ const getMySingleRoutineFromDB = async (routineId: string, userId: string) => {
 const updateMyRoutineIntoDB = async (
   routineId: string,
   userId: string,
-  payload: Partial<TRoutine>,
+  payload: TRoutine,
 ) => {
   // checking if the tutor is exist
   const tutor = await Tutor.findOne({ user: userId });
   if (!tutor) {
     throw new AppError(httpStatus.NOT_FOUND, 'This tutor does not exist!');
   }
+
+  // 🔎 Only fetch relevant routines
+  const tutorRoutines = await Routine.find({
+    tutorId: tutor._id,
+    isActive: true,
+    isDeleted: false,
+  }).select('weeklySchedule');
+
+  // ⚠️ conflict check
+  checkRoutineConflict(payload?.weeklySchedule, tutorRoutines);
 
   const routine = await Routine.findOneAndUpdate(
     {

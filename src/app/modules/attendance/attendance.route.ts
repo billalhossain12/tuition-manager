@@ -18,6 +18,11 @@ router.post(
 );
 
 router.get('/', auth(USER_ROLE.tutor), AttendanceControllers.getAllAttendances);
+router.get(
+  '/today',
+  auth(USER_ROLE.tutor),
+  AttendanceControllers.getTodayAttendances,
+);
 
 router.get(
   '/:attendanceId',
