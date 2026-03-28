@@ -42,7 +42,9 @@ const markAttendanceIntoDB = async (userId: string, payload: TAttendance) => {
 };
 
 const getAllAttendancesFromDB = async () => {
-  const result = await Attendance.find();
+  const result = await Attendance.find()
+    .populate('studentId')
+    .populate('routineId');
   return result;
 };
 
